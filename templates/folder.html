@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ folder_name }} - Files</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #111;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2980b9;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .file-row {
+            background: #222;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-name {
+            word-break: break-all;
+            flex: 1;
+            margin-right: 12px;
+        }
+        .file-size {
+            color: #999;
+            font-size: 13px;
+            margin-right: 12px;
+            white-space: nowrap;
+        }
+        .btn-download {
+            background: #27ae60;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .btn-download:hover { background: #219150; }
+        .btn-zip-all {
+            display: block;
+            text-align: center;
+            background: #2980b9;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .btn-zip-all:hover { background: #2471a3; }
+        .empty {
+            text-align: center;
+            color: #777;
+            margin-top: 60px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ folder_name }}</h1>
+        <a class="back-link" href="/files">&larr; Back to all folders</a>
+        {% if files %}
+            <a class="btn-zip-all" href="/files/{{ folder_name }}/download-zip">Download All as ZIP</a>
+            {% for file in files %}
+            <div class="file-row">
+                <span class="file-name">{{ file.name }}</span>
+                <span class="file-size">{{ file.size }}</span>
+                <a class="btn-download" href="/files/{{ folder_name }}/download/{{ file.name }}">Download</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">No files in this folder.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

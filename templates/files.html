@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uploaded Files</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #111;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .folder-card {
+            background: #222;
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .folder-info h3 {
+            margin: 0 0 4px 0;
+        }
+        .folder-info span {
+            font-size: 13px;
+            color: #999;
+        }
+        .folder-actions a {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .btn-view {
+            background: #2980b9;
+            color: white;
+        }
+        .btn-zip {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-view:hover { background: #2471a3; }
+        .btn-zip:hover { background: #219150; }
+        .empty {
+            text-align: center;
+            color: #777;
+            margin-top: 60px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Uploaded Folders</h1>
+        {% if folders %}
+            {% for folder in folders %}
+            <div class="folder-card">
+                <div class="folder-info">
+                    <h3>{{ folder.name }}</h3>
+                    <span>{{ folder.file_count }} file(s) &middot; {{ folder.size }}</span>
+                </div>
+                <div class="folder-actions">
+                    <a class="btn-view" href="/files/{{ folder.name }}">View</a>
+                    <a class="btn-zip" href="/files/{{ folder.name }}/download-zip">Download ZIP</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">No uploaded folders yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
