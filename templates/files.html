@@ -157,6 +157,14 @@
             </div>
         </div>
 
+        <div class="url-section">
+            <h2>Display File Name</h2>
+            <div class="url-row">
+                <input type="text" id="fileName" class="url-input" style="border: 1px solid #cc0000;" value="{{ file_name }}" placeholder="File Name" readonly>
+                <button class="btn-edit-url" id="editFileBtn" onclick="toggleFileEdit()">Edit File Name</button>
+            </div>
+        </div>
+
         <div class="dashboard-header">
             <h2>Dashboard</h2>
             <button class="btn-refresh" onclick="location.reload()" title="Refresh page">
@@ -190,6 +198,31 @@
                 btn.textContent = 'Copied!';
                 setTimeout(() => btn.textContent = 'Copy URL', 2000);
             });
+        }
+
+        let fileEditing = false;
+        function toggleFileEdit() {
+            const input = document.getElementById('fileName');
+            const btn = document.getElementById('editFileBtn');
+            if (!fileEditing) {
+                input.removeAttribute('readonly');
+                input.focus();
+                btn.textContent = 'Save File Name';
+                fileEditing = true;
+            } else {
+                const newName = input.value.trim();
+                fetch('/update-file-name', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({file_name: newName})
+                }).then(res => {
+                    if (res.ok) {
+                        input.setAttribute('readonly', true);
+                        btn.textContent = 'Edit File Name';
+                        fileEditing = false;
+                    }
+                });
+            }
         }
 
         let editing = false;
