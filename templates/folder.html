@@ -83,14 +83,14 @@
 <body>
     <div class="container">
         <h1>{{ folder_name }}</h1>
-        <a class="back-link" href="/files">&larr; Back to main page</a>
+        <a class="back-link" href="/access">&larr; Back to main page</a>
         {% if files %}
-            <a class="btn-zip-all" href="/files/{{ folder_name }}/download-zip">Download All as ZIP</a>
+            <a class="btn-zip-all" href="/access/{{ folder_name }}/download-zip">Download All as ZIP</a>
             {% for file in files %}
             <div class="file-row">
                 <span class="file-name">{{ file.name }}</span>
                 <span class="file-size">{{ file.size }}</span>
-                <a class="btn-download" href="/files/{{ folder_name }}/download/{{ file.name }}">Download</a>
+                <a class="btn-download" href="/access/{{ folder_name }}/download/{{ file.name }}">Download</a>
             </div>
             {% endfor %}
         {% else %}
