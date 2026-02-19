@@ -193,11 +193,38 @@
     <script>
         function copyUrl() {
             const input = document.getElementById('phishUrl');
-            navigator.clipboard.writeText(input.value).then(() => {
-                const btn = document.querySelector('.btn-copy');
+            const text = input.value;
+            const btn = document.querySelector('.btn-copy');
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => btn.textContent = 'Copy URL', 2000);
+                }).catch(() => {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
                 btn.textContent = 'Copied!';
                 setTimeout(() => btn.textContent = 'Copy URL', 2000);
-            });
+            } catch (err) {
+                btn.textContent = 'Failed';
+                setTimeout(() => btn.textContent = 'Copy URL', 2000);
+            }
+            document.body.removeChild(textarea);
         }
 
         let fileEditing = false;
