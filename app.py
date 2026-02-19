@@ -1,15 +1,33 @@
-from flask import Flask, request, render_template, send_from_directory, abort
+from flask import Flask, request, render_template, send_from_directory, abort, jsonify
 import os
 import shutil
 import zipfile
 import io
+import json
 from flask import send_file
 from datetime import datetime
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 LOG_FILE = 'access_log.txt'
+PHISH_URL_FILE = 'phish_url.json'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def get_phish_url():
+    if os.path.exists(PHISH_URL_FILE):
+        with open(PHISH_URL_FILE, 'r') as f:
+            data = json.load(f)
+            return data.get('url', '')
+    return ''
+
+def save_phish_url(url):
+    with open(PHISH_URL_FILE, 'w') as f:
+        json.dump({'url': url}, f)
+
+@app.after_request
+def add_no_cache(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 @app.route('/')
 def index():
@@ -50,7 +68,7 @@ def files_page():
                     'file_count': file_count,
                     'size': size_str
                 })
-    return render_template('files.html', folders=folders)
+    return render_template('files.html', folders=folders, phish_url=get_phish_url())
 
 @app.route('/files/<folder_name>')
 def view_folder(folder_name):
@@ -88,6 +106,13 @@ def download_zip(folder_name):
                 zf.write(full, arcname)
     memory_file.seek(0)
     return send_file(memory_file, download_name=f'{folder_name}.zip', as_attachment=True)
+
+@app.route('/update-phish-url', methods=['POST'])
+def update_phish_url():
+    data = request.get_json()
+    url = data.get('url', '')
+    save_phish_url(url)
+    return jsonify({'status': 'ok'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
