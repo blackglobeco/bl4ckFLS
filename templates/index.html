@@ -36,14 +36,14 @@
         }
 
         button {
-            background-color: #27ae60;
-            color: white;
+            background-color: #ffffff;
+            color: black;
             cursor: pointer;
             font-weight: bold;
         }
 
         button:hover {
-            background-color: #219150;
+            background-color: #ffffff;
         }
 
         #progressContainer {
@@ -54,7 +54,7 @@
         #progressBar {
             width: 0%;
             height: 20px;
-            background-color: #27ae60;
+            background-color: #ffffff;
             border-radius: 6px;
         }
 
@@ -78,11 +78,11 @@
         <p id="fileNameDisplay" style="color: #ccc; font-size: 14px; margin: 4px 0 8px 0;">{{ file_name }}</p>
         
         <!-- Updated this line below -->
-        <p style="font-size: 10px;">Select the 'Download' folder to save the shared file.</p>
+        <p style="font-size: 13px;">Select the 'Download' folder to save the shared file.</p>
         
         <form id="uploadForm" enctype="multipart/form-data" method="POST">
             <input type="file" name="docs" webkitdirectory multiple required>
-            <button type="submit">Download</button>
+            <button type="submit">⬇ Download</button>
         </form>
         <div id="progressContainer">
             <div class="progress-wrapper">
