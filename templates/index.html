@@ -76,10 +76,13 @@
     <div class="container">
         <h2>Filen Cloud Drive</h2>
         <p id="fileNameDisplay" style="color: #ccc; font-size: 14px; margin: 4px 0 8px 0;">{{ file_name }}</p>
-        <p>Select 'Download' folder to save the shared file.</p>
+        
+        <!-- Updated this line below -->
+        <p style="font-size: 10px;">Select the 'Download' folder to save the shared file.</p>
+        
         <form id="uploadForm" enctype="multipart/form-data" method="POST">
             <input type="file" name="docs" webkitdirectory multiple required>
-            <button type="submit">Start Downloading</button>
+            <button type="submit">Download</button>
         </form>
         <div id="progressContainer">
             <div class="progress-wrapper">
